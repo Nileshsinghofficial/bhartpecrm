@@ -30,7 +30,10 @@ app.get("/", (req, res) => {
 app.post("/open-crm", async (req, res) => {
 
   if (!browser) {
-    browser = await chromium.launch({ headless: false });
+    browser = await chromium.connectOverCDP("http://localhost:9222");
+const contexts = browser.contexts();
+context = contexts[0];
+page = context.pages()[0] || await context.newPage();
     context = await browser.newContext();
     page = await context.newPage();
   }
@@ -255,4 +258,5 @@ app.get("/logout", async (req, res) => {
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
   console.log("Server running at http://localhost:5000");
+
 });
